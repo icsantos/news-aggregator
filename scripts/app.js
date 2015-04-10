@@ -170,7 +170,6 @@ APP.Main = (function() {
   });
 
   function loadStoryBatch() {
-
     if (storyLoadCount > 0)
       return;
 
