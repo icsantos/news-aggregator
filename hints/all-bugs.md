@@ -1,7 +1,7 @@
 ##List of all known bugs:
 
 ###CSS issues
-* Lots of style recalcs when we bring a story in (body.details-active .story__title etc)
+* Lots of style recalcs when we bring a story in (`body.details-active .story__title`, etc)
 * Double shadow on .header
 * Triple(!) shadow on .story__score and .story-details
 * Promoted every single child element in .story-details. GO ME. This one will show up when they have visited a few stories. If they check the layers panel they'll see it too.
