@@ -76,7 +76,6 @@ APP.Main = (function () {
   }
 
   function onStoryClick(details) {
-
     if (details.url) {
       details.urlobj = new URL(details.url);
     }
@@ -100,91 +99,46 @@ APP.Main = (function () {
     closeButton.addEventListener('click', hideStory.bind(this, details.id));
     storyContent.style.paddingTop = headerHeight + 'px';
 
-    // show the story details
-    showStory();
+    if (typeof kids !== 'undefined') {
+      
+      var comment, k;
+      function onStoryComment(commentDetails) {
+        commentDetails.time *= 1000;
 
-    if (typeof kids === 'undefined') {
-      return;
-    }
-    
-    var comment, k;
-    function onStoryComment(commentDetails) {
-      commentDetails.time *= 1000;
-
-      comment = commentsElement.querySelector(
-          '#sdc-' + commentDetails.id);
-      comment.innerHTML = storyDetailsCommentTemplate(
-          commentDetails,
-          localeData);
-    }
-
-    for (k = 0; k < kids.length; k++) {
-
-      comment = document.createElement('aside');
-      comment.setAttribute('id', 'sdc-' + kids[k]);
-      comment.classList.add('story-details__comment');
-      comment.innerHTML = commentHtml;
-      commentsElement.appendChild(comment);
-
-      // Update the comment with the live data.
-      APP.Data.getStoryComment(kids[k], onStoryComment.bind(this));
-    }
-  }
-
-  function showStory() {
-    if (inDetails) {
-      return;
-    }
-    inDetails = true;
-
-    // Find out where it currently is.
-    var left = storyDetails.getBoundingClientRect().left;
-
-    function animate() {
-      // Figure out where it needs to go.
-      left -= left * 0.1;
-
-      // Set up the next bit of the animation if there is more to do.
-      if (Math.abs(left) > 0.5) {
-        requestAnimationFrame(animate);
-      } else {
-        left = 0;
-      }
-      storyDetails.style.left = left + 'px';
-    }
-
-    storyDetails.style.opacity = 1;
-    document.body.classList.add('details-active');
-    requestAnimationFrame(animate);
-  }
-
-  function hideStory() {
-    if (!inDetails) {
-      return;
-    }
-    inDetails = false;
-
-    // Find out where it currently is.
-    var target = main.getBoundingClientRect().width + 100;
-    var left = storyDetails.getBoundingClientRect().left;
-
-    function animate() {
-      // Figure out where it needs to go.
-      left += (target - left) * 0.1;
-
-      // Set up the next bit of the animation if there is more to do.
-      if (Math.abs(left - target) > 0.5) {
-        requestAnimationFrame(animate);
-      } else {
-        left = target;
+        comment = commentsElement.querySelector(
+            '#sdc-' + commentDetails.id);
+        comment.innerHTML = storyDetailsCommentTemplate(
+            commentDetails,
+            localeData);
       }
 
-      storyDetails.style.left = left + 'px';
+      for (k = 0; k < kids.length; k++) {
+
+        comment = document.createElement('aside');
+        comment.setAttribute('id', 'sdc-' + kids[k]);
+        comment.classList.add('story-details__comment');
+        comment.innerHTML = commentHtml;
+        commentsElement.appendChild(comment);
+
+        // Update the comment with the live data.
+        APP.Data.getStoryComment(kids[k], onStoryComment.bind(this));
+      }
     }
 
-    storyDetails.style.opacity = 0;
-    document.body.classList.remove('details-active');
-    requestAnimationFrame(animate);
+    showStory(details.id);
+  }
+
+  function showStory(id) {
+    if (!storyDetails)
+      return;
+
+    storyDetails.classList.add('visible');
+    storyDetails.classList.remove('hidden');
+  }
+
+  function hideStory(id) {
+    storyDetails.classList.add('hidden');
+    storyDetails.classList.remove('visible');
   }
 
   main.addEventListener('touchstart', function (evt) {
